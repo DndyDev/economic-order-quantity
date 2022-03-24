@@ -17,14 +17,21 @@
 
 using namespace std;
 
-void ecq_opt(int item_count, int procent){
-    
+const double calculate_limit_cost(int velocity, int holding_cost, int order_cost,int item_cost, int time, int quantity){
+    return order_cost * velocity * time / quantity 
+                    + holding_cost * time * quantity  / 2 
+                    + item_cost * velocity * time;
+}
+
+void ecq_opt(int item_count, int procent, double quantiy, double limit, double velocity,
+                int holding_cost, int order_cost, int item_cost, int time,double quantity){
+    double l1 = calculate_limit_cost(velocity,holding_cost,order_cost * procent,item_cost,time,quantity);
+    double l2 = calculate_limit_cost(velocity,holding_cost,order_cost * procent,item_cost * procent/100,time,quantity);
+
 }
 void ecq (int velocity, int holding_cost, int order_cost,int delivery_time, int item_cost, int time){
     double quantity = abs( 2 * velocity * holding_cost / order_cost ); // количество
-    double limit_cost = order_cost * velocity * time / quantity 
-                    + holding_cost * time * quantity  / 2 
-                    + item_cost * velocity * time;
+    double limit_cost = calculate_limit_cost(velocity,holding_cost,order_cost,item_cost,time,quantity);
     double consingment = delivery_time * velocity; //  партия – t зак
     double period_consigment = quantity / velocity; //  𝜏 – период поставки
     double frequency = velocity / quantity; // частота 
