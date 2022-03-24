@@ -17,27 +17,28 @@
 
 using namespace std;
 
-const double calculate_limit_cost(int velocity, int holding_cost, int order_cost,int item_cost, int time, int quantity){
-    return order_cost * velocity * time / quantity 
-                    + holding_cost * time * quantity  / 2 
-                    + item_cost * velocity * time;
+const double calculate_limit_cost(int velocity, int holding_cost, int order_cost,double item_cost, int period, int quantity){
+    return order_cost * velocity * period / quantity 
+                    + holding_cost * period * quantity  / 2 
+                    + item_cost * velocity * period;
 }
 
-void ecq_opt(int item_count, int procent, double quantiy, double limit, double velocity,
-                int holding_cost, int order_cost, int item_cost, int time,double quantity){
-    double l1 = calculate_limit_cost(velocity,holding_cost,order_cost * procent,item_cost,time,quantity);
-    double l2 = calculate_limit_cost(velocity,holding_cost,order_cost * procent,item_cost * procent/100,time,quantity);
+void ecq_opt(int procent, double quantiy, double velocity, double limit,
+                int holding_cost, int order_cost, int item_cost, int period,double quantity){
+    // double l1 = calculate_limit_cost(velocity,holding_cost,order_cost * procent,item_cost,period,quantity);
+    int new_quantity = 190;
+    double l2 = calculate_limit_cost(velocity,holding_cost,order_cost * procent,item_cost * procent/100,period,new_quantity);
+    cout << limit << " " << l2;
+
 
 }
-void ecq (int velocity, int holding_cost, int order_cost,int delivery_time, int item_cost, int time){
+void ecq (int velocity, int holding_cost, int order_cost,int delivery_time, int item_cost, int period, int procent){
     double quantity = abs( 2 * velocity * holding_cost / order_cost ); // количество
-    double limit_cost = calculate_limit_cost(velocity,holding_cost,order_cost,item_cost,time,quantity);
-    double consingment = delivery_time * velocity; //  партия – t зак
+    double limit_cost = calculate_limit_cost(velocity,holding_cost,order_cost,item_cost,period,quantity);
+    double consingment = delivery_time * velocity; //  партия – t закч
     double period_consigment = quantity / velocity; //  𝜏 – период поставки
     double frequency = velocity / quantity; // частота 
-    double consingment_count = velocity * time / quantity;
-
-
+    double consingment_count = velocity * period / quantity;
 
     /* ToDo :  
         * Подписи к переменным.
@@ -50,6 +51,7 @@ void ecq (int velocity, int holding_cost, int order_cost,int delivery_time, int 
     cout << frequency << "\n";
     cout << consingment_count << "\n";
 
+    ecq_opt(procent,quantity, velocity,limit_cost, holding_cost, order_cost, delivery_time, item_cost, period);
 }
 
 
@@ -74,8 +76,8 @@ int main()
     cout << "Need permanent rental ? y/n" << endl;
     cin >> answer;
     if (answer == "y"){
-        ecq(D, D/W * A ,p,t,p,kvartal);
+        ecq(D, D/W * A ,p,t,p,kvartal,E);
     }else{
-        ecq(D,S,p,t,p,kvartal);
+        ecq(D,S,p,t,p,kvartal,E);
     }
 }   
